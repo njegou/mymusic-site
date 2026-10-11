@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mymusic · streaming musical auto-hébergé</title>
+  <meta name="description" content="mymusic : ma propre plateforme de streaming musical, hébergée sur un NAS Synology. Pourquoi je l'ai construite, comment elle fonctionne, et ce qui la rend particulière.">
+  <meta name="theme-color" content="#121212">
+  <meta property="og:title" content="mymusic · streaming musical auto-hébergé">
+  <meta property="og:description" content="Une alternative à Spotify qui tourne sur un NAS de 512 Mo de RAM, pour 0 € par mois.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#top">
+    <img src="assets/favicon.svg" alt="" width="28" height="28">
+    <span>mymusic</span>
+  </a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#pourquoi">Pourquoi</a>
+    <a href="#fonctions">Fonctions</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#config">Config</a>
+    <a href="#defis">Défis</a>
+  </nav>
+  <a class="nav-cta" href="https://github.com/njegou/mymusic" target="_blank" rel="noopener">GitHub</a>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Projet personnel · 2026</p>
+      <h1>Ma musique.<br>Sur <em>mon</em> matériel.</h1>
+      <p class="lead">
+        mymusic est une plateforme de streaming musical que j'ai construite de A à Z.
+        Elle tourne en permanence sur un petit NAS Synology chez moi, s'écoute sur iPhone,
+        sur ordinateur ou dans un navigateur, et coûte environ <strong>0&nbsp;€ par mois</strong>.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#architecture">Voir comment ça marche</a>
+        <a class="btn btn-ghost" href="#pourquoi">Pourquoi ce projet</a>
+      </div>
+      <dl class="stats">
+        <div><dt>0 €</dt><dd>par mois</dd></div>
+        <div><dt>512 Mo</dt><dd>de RAM sur le serveur</dd></div>
+        <div><dt>3 500+</dt><dd>morceaux en bibliothèque</dd></div>
+        <div><dt>3</dt><dd>plateformes : web, iOS, Linux</dd></div>
+      </dl>
+    </div>
+
+    <div class="phone" aria-label="Aperçu de l'écran d'accueil de l'application">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <p class="phone-title">mymusic</p>
+        <div class="phone-grid">
+          <span>Accueil</span>
+          <span>Recherche</span>
+          <span>Playlists</span>
+          <span>Importer</span>
+        </div>
+        <div class="phone-player">
+          <div class="phone-cover"></div>
+          <div class="phone-track">
+            <i></i><i class="short"></i>
+          </div>
+          <div class="phone-play"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POURQUOI -->
+  <section id="pourquoi" class="section">
+    <div class="section-head">
+      <p class="eyebrow">01 · Pourquoi</p>
+      <h2>Ne plus louer sa propre musique</h2>
+    </div>
+    <div class="cards three">
+      <article class="card reveal">
+        <span class="card-num">A</span>
+        <h3>Garder le contrôle</h3>
+        <p>Sur Spotify ou Apple Music, un titre peut disparaître du catalogue du jour au lendemain. Ici, chaque fichier est stocké chez moi et reste disponible tant que le NAS tourne.</p>
+      </article>
+      <article class="card reveal">
+        <span class="card-num">B</span>
+        <h3>Arrêter de payer</h3>
+        <p>Pas d'abonnement mensuel. Le matériel existait déjà, les logiciels sont open source, et l'hébergement du site est gratuit. Le coût réel se limite à l'électricité du NAS.</p>
+      </article>
+      <article class="card reveal">
+        <span class="card-num">C</span>
+        <h3>Apprendre en construisant</h3>
+        <p>Réseau, serveur Linux, API, front-end, application mobile : le projet m'a obligé à toucher à toutes les couches d'un vrai service, avec de vraies contraintes matérielles.</p>
+      </article>
+    </div>
+    <blockquote class="quote reveal">
+      L'objectif : une interface qui rivalise avec les applications commerciales, sur un service
+      toujours allumé, qui ne dépend d'aucun PC et d'aucun abonnement.
+    </blockquote>
+  </section>
+
+  <!-- FONCTIONS -->
+  <section id="fonctions" class="section">
+    <div class="section-head">
+      <p class="eyebrow">02 · Ce que fait mymusic</p>
+      <h2>Tout ce qu'on attend d'une app de streaming</h2>
+    </div>
+    <div class="features">
+      <article class="feature reveal">
+        <h3>Recherche dans un catalogue géant</h3>
+        <p>On cherche un titre, un album ou un artiste. Les résultats viennent de YouTube Music, filtrés automatiquement (lives, covers, remix et durées aberrantes écartés).</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Écoute à la demande</h3>
+        <p>Un morceau trouvé peut être écouté immédiatement en streaming, sans rien écrire sur le disque. S'il plaît, il rejoint la bibliothèque en un clic.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Albums entiers</h3>
+        <p>Un album complet peut être ajouté d'un coup : chaque piste est récupérée, taguée avec sa pochette et indexée dans la bibliothèque.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Playlists</h3>
+        <p>Création, renommage, réorganisation par glisser-déposer, pochettes personnalisées. Les playlists sont stockées dans Navidrome, donc visibles depuis n'importe quel client.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Import de fichiers</h3>
+        <p>MP3, FLAC, M4A, WAV, et même des archives .zip. Les zips sont ouverts directement dans le navigateur, envoyés par lots, puis traités en tâche de fond sur le NAS.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Accueil personnalisé</h3>
+        <p>Étagères par genre, albums récents, nouvelles sorties des artistes favoris, radio intelligente et paroles synchronisées en plein écran.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Multi-utilisateur</h3>
+        <p>Chaque personne se connecte avec ses propres identifiants. Favoris, playlists et historique d'écoute sont séparés par compte.</p>
+      </article>
+      <article class="feature reveal">
+        <h3>Installable partout</h3>
+        <p>Une PWA pour le navigateur, une app iOS avec lecture en arrière-plan, et une app de bureau légère pour Linux.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture" class="section">
+    <div class="section-head">
+      <p class="eyebrow">03 · Architecture</p>
+      <h2>Du téléphone jusqu'au disque dur</h2>
+      <p class="section-sub">Le front-end est hébergé gratuitement sur GitHub Pages. Tout le reste vit sur le NAS, exposé de façon sécurisée par un tunnel Cloudflare : aucun port n'est ouvert sur la box.</p>
+    </div>
+
+    <figure class="diagram reveal">
+      <svg viewBox="0 0 960 470" role="img" aria-labelledby="diag-title">
+        <title id="diag-title">Schéma : les clients passent par GitHub Pages et Cloudflare Tunnel pour atteindre le NAS, qui héberge le backend Python, Navidrome, yt-dlp et la bibliothèque.</title>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="d-arrowhead"/>
+          </marker>
+        </defs>
+
+        <!-- Clients -->
+        <text x="20" y="28" class="d-label">CLIENTS</text>
+        <rect x="20" y="44" width="190" height="62" rx="12" class="d-box"/>
+        <text x="40" y="72" class="d-title">iPhone</text>
+        <text x="40" y="92" class="d-sub">App iOS (Capacitor)</text>
+        <rect x="20" y="122" width="190" height="62" rx="12" class="d-box"/>
+        <text x="40" y="150" class="d-title">Navigateur</text>
+        <text x="40" y="170" class="d-sub">PWA installable</text>
+        <rect x="20" y="200" width="190" height="62" rx="12" class="d-box"/>
+        <text x="40" y="228" class="d-title">Ordinateur</text>
+        <text x="40" y="248" class="d-sub">App Linux (Tauri)</text>
+        <rect x="20" y="278" width="190" height="62" rx="12" class="d-box"/>
+        <text x="40" y="306" class="d-title">Clients Subsonic</text>
+        <text x="40" y="326" class="d-sub">Substreamer, Amperfy…</text>
+
+        <!-- GitHub Pages -->
+        <text x="290" y="28" class="d-label">INTERFACE</text>
+        <rect x="290" y="96" width="180" height="100" rx="12" class="d-box"/>
+        <text x="310" y="128" class="d-title">GitHub Pages</text>
+        <text x="310" y="150" class="d-sub">HTML · CSS · JS</text>
+        <text x="310" y="170" class="d-sub">sans framework</text>
+
+        <!-- Cloudflare -->
+        <text x="290" y="258" class="d-label">ACCÈS DISTANT</text>
+        <rect x="290" y="268" width="180" height="90" rx="12" class="d-box d-accent-box"/>
+        <text x="310" y="300" class="d-title">Cloudflare Tunnel</text>
+        <text x="310" y="322" class="d-sub">HTTPS, aucun port</text>
+        <text x="310" y="340" class="d-sub">ouvert sur la box</text>
+
+        <!-- NAS -->
+        <text x="550" y="28" class="d-label">NAS SYNOLOGY DS218 · ARM64 · 512 MO</text>
+        <rect x="550" y="44" width="390" height="400" rx="16" class="d-nas"/>
+
+        <rect x="574" y="70" width="342" height="78" rx="10" class="d-box"/>
+        <text x="594" y="100" class="d-title">upload_server.py</text>
+        <text x="594" y="122" class="d-sub">API Python : recherche, streaming, playlists,</text>
+        <text x="594" y="138" class="d-sub">import, accueil, radio, authentification</text>
+
+        <rect x="574" y="168" width="160" height="78" rx="10" class="d-box"/>
+        <text x="594" y="198" class="d-title">Navidrome</text>
+        <text x="594" y="220" class="d-sub">serveur musical</text>
+        <text x="594" y="236" class="d-sub">API Subsonic</text>
+
+        <rect x="756" y="168" width="160" height="78" rx="10" class="d-box"/>
+        <text x="776" y="198" class="d-title">yt-dlp + ffmpeg</text>
+        <text x="776" y="220" class="d-sub">acquisition et</text>
+        <text x="776" y="236" class="d-sub">conversion audio</text>
+
+        <rect x="574" y="266" width="342" height="70" rx="10" class="d-box"/>
+        <text x="594" y="296" class="d-title">Bibliothèque musicale</text>
+        <text x="594" y="318" class="d-sub">fichiers audio, pochettes, paroles .lrc</text>
+
+        <rect x="574" y="356" width="342" height="66" rx="10" class="d-box d-muted-box"/>
+        <text x="594" y="384" class="d-title">Planificateur DSM</text>
+        <text x="594" y="406" class="d-sub">relance des services au démarrage du NAS</text>
+
+        <!-- Arrows -->
+        <path d="M210 75 C250 75 250 130 288 135" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M210 153 L288 150" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M210 231 C250 231 250 170 288 165" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M210 309 L288 309" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M380 196 L380 240" class="d-line d-dash" marker-end="url(#arrow)"/>
+        <text x="390" y="224" class="d-sub">appels API</text>
+        <path d="M470 300 C520 300 520 109 572 109" class="d-line d-accent" marker-end="url(#arrow)"/>
+        <path d="M470 330 C530 330 530 207 572 207" class="d-line d-accent" marker-end="url(#arrow)"/>
+        <path d="M654 148 L654 166" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M836 148 L836 166" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M654 246 L654 264" class="d-line" marker-end="url(#arrow)"/>
+        <path d="M836 246 L836 264" class="d-line" marker-end="url(#arrow)"/>
+      </svg>
+      <figcaption>Le backend Python orchestre tout : il interroge YouTube Music, déclenche les téléchargements, puis s'appuie sur Navidrome pour la bibliothèque, les playlists et le streaming.</figcaption>
+    </figure>
+
+    <ol class="flow">
+      <li class="reveal"><span>1</span><div><h3>Je cherche un titre</h3><p>L'interface appelle l'API du NAS à travers le tunnel Cloudflare.</p></div></li>
+      <li class="reveal"><span>2</span><div><h3>Le NAS interroge YouTube Music</h3><p>Recherche à plat d'abord, puis récupération parallèle des métadonnées, filtrage et mise en cache.</p></div></li>
+      <li class="reveal"><span>3</span><div><h3>J'écoute ou j'ajoute</h3><p>Lecture directe en streaming, ou téléchargement, tag, pochette et indexation dans Navidrome.</p></div></li>
+      <li class="reveal"><span>4</span><div><h3>C'est disponible partout</h3><p>Le morceau apparaît sur toutes les apps, y compris les clients Subsonic tiers.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- CONFIG -->
+  <section id="config" class="section">
+    <div class="section-head">
+      <p class="eyebrow">04 · La configuration</p>
+      <h2>Le matériel et la stack</h2>
+    </div>
+    <div class="config">
+      <div class="config-block reveal">
+        <h3>Matériel</h3>
+        <table>
+          <tr><th>Serveur</th><td>Synology DS218</td></tr>
+          <tr><th>Processeur</th><td>ARM64 (aarch64)</td></tr>
+          <tr><th>Mémoire</th><td>512 Mo de RAM</td></tr>
+          <tr><th>Docker</th><td>Non supporté</td></tr>
+          <tr><th>Poste client</th><td>Arch Linux, pilotage en SSH</td></tr>
+        </table>
+      </div>
+      <div class="config-block reveal">
+        <h3>Serveur</h3>
+        <table>
+          <tr><th>Musique</th><td>Navidrome, binaire natif ARM64</td></tr>
+          <tr><th>API</th><td>Python, serveur HTTP maison</td></tr>
+          <tr><th>Catalogue</th><td>ytmusicapi + yt-dlp</td></tr>
+          <tr><th>Audio</th><td>ffmpeg</td></tr>
+          <tr><th>Plugins</th><td>Métadonnées Apple Music, paroles LRCLIB</td></tr>
+        </table>
+      </div>
+      <div class="config-block reveal">
+        <h3>Clients et réseau</h3>
+        <table>
+          <tr><th>Web</th><td>PWA en JavaScript natif</td></tr>
+          <tr><th>Hébergement</th><td>GitHub Pages</td></tr>
+          <tr><th>iOS</th><td>Capacitor, lecture en arrière-plan</td></tr>
+          <tr><th>Bureau</th><td>Tauri (Linux)</td></tr>
+          <tr><th>Exposition</th><td>Cloudflare Tunnel, Tailscale en secours</td></tr>
+        </table>
+      </div>
+    </div>
+    <ul class="tags reveal" aria-label="Technologies">
+      <li>Navidrome</li><li>Python</li><li>JavaScript</li><li>PWA</li><li>Subsonic API</li>
+      <li>yt-dlp</li><li>ffmpeg</li><li>Cloudflare Tunnel</li><li>Tailscale</li>
+      <li>Capacitor</li><li>Tauri</li><li>GitHub Actions</li><li>Synology DSM</li>
+    </ul>
+  </section>
+
+  <!-- DEFIS -->
+  <section id="defis" class="section">
+    <div class="section-head">
+      <p class="eyebrow">05 · Particularités</p>
+      <h2>Ce qui rend le projet intéressant</h2>
+      <p class="section-sub">Faire tourner un service de streaming sur un NAS d'entrée de gamme impose des choix qu'on ne ferait pas sur un vrai serveur. C'est là que se trouve l'essentiel du travail.</p>
+    </div>
+    <div class="challenges">
+      <article class="challenge reveal">
+        <div class="metric"><span class="before">42 s</span><span class="arrow-r">→</span><span class="after">11 s</span></div>
+        <h3>Recherche optimisée pour l'ARM</h3>
+        <p>La première version mettait plus de 40 secondes à répondre. En séparant la recherche en deux phases (liste rapide, puis métadonnées en parallèle) et en ajoutant un cache disque, le temps à froid a été divisé par quatre.</p>
+      </article>
+      <article class="challenge reveal">
+        <div class="metric"><span class="after">0</span><span class="unit">transcodage</span></div>
+        <h3>Contourner un ffmpeg limité</h3>
+        <p>Le ffmpeg fourni par Synology ne sait pas décoder l'AAC. Plutôt que de lutter, tout est servi au format d'origine : moins de charge CPU et aucune perte de qualité.</p>
+      </article>
+      <article class="challenge reveal">
+        <div class="metric"><span class="after">0</span><span class="unit">port ouvert</span></div>
+        <h3>Accessible de partout, sans exposer la box</h3>
+        <p>Le tunnel Cloudflare sort du NAS vers Internet : rien n'entre directement. L'API est protégée par des jetons de session liés aux comptes Navidrome.</p>
+      </article>
+      <article class="challenge reveal">
+        <div class="metric"><span class="after">0 €</span><span class="unit">compte développeur</span></div>
+        <h3>Une app iOS sans App Store</h3>
+        <p>L'IPA est compilée par GitHub Actions sur un runner macOS, puis installée en sideload depuis Linux. L'app charge l'interface en ligne, donc chaque mise à jour du site est instantanée sur le téléphone.</p>
+      </article>
+      <article class="challenge reveal">
+        <div class="metric"><span class="after">105 Mo</span><span class="unit">zip importé</span></div>
+        <h3>Imports lourds, serveur léger</h3>
+        <p>Les archives sont décompressées dans le navigateur, puis envoyées par petits lots. Le NAS traite chaque lot en tâche de fond et l'interface suit l'avancement en direct.</p>
+      </article>
+      <article class="challenge reveal">
+        <div class="metric"><span class="after">24/7</span><span class="unit">sans PC allumé</span></div>
+        <h3>Toujours disponible</h3>
+        <p>Pas de Docker sur ce modèle : chaque service est un processus natif, relancé automatiquement par le planificateur du NAS au démarrage.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- EVOLUTION -->
+  <section id="evolution" class="section">
+    <div class="section-head">
+      <p class="eyebrow">06 · Évolution</p>
+      <h2>D'un script sur PC à un vrai service</h2>
+    </div>
+    <ol class="timeline">
+      <li class="reveal">
+        <h3>Point de départ</h3>
+        <p>Un agent local sur un PC Windows, accessible uniquement sur le WiFi de la maison, avec un simple envoi de fichiers.</p>
+      </li>
+      <li class="reveal">
+        <h3>Migration sur le NAS</h3>
+        <p>Tout passe sur le Synology. Le service ne dépend plus d'un ordinateur allumé.</p>
+      </li>
+      <li class="reveal">
+        <h3>Accès distant</h3>
+        <p>Mise en place du tunnel Cloudflare : la bibliothèque devient accessible depuis n'importe où.</p>
+      </li>
+      <li class="reveal">
+        <h3>Interface maison</h3>
+        <p>Une PWA complète remplace les clients tiers : recherche, streaming, playlists, import.</p>
+      </li>
+      <li class="reveal">
+        <h3>Apps natives</h3>
+        <p>Une app iOS avec lecture en arrière-plan et une app de bureau pour Linux.</p>
+      </li>
+      <li class="reveal is-now">
+        <h3>Aujourd'hui</h3>
+        <p>Phase de finition : multi-utilisateur, accueil personnalisé, radio, paroles synchronisées.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="suite" class="section">
+    <div class="section-head">
+      <p class="eyebrow">07 · La suite</p>
+      <h2>Ce qui reste à faire</h2>
+    </div>
+    <ul class="roadmap">
+      <li class="reveal"><h3>Version Android</h3><p>Une app générée à partir de la PWA (Trusted Web Activity).</p></li>
+      <li class="reveal"><h3>Nettoyage des tags</h3><p>Des genres plus précis pour une radio et des recommandations vraiment pertinentes.</p></li>
+      <li class="reveal"><h3>App de bureau</h3><p>Contrôles multimédia du système et cache hors ligne.</p></li>
+      <li class="reveal"><h3>Nouveau NAS</h3><p>Un modèle x86 avec plus de mémoire pour lever les limites actuelles.</p></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div>
+    <a class="brand" href="#top"><img src="assets/favicon.svg" alt="" width="24" height="24"><span>mymusic</span></a>
+    <p>Conçu, développé et hébergé par Nicolas.</p>
+  </div>
+  <a href="https://github.com/njegou/mymusic" target="_blank" rel="noopener">Code source du front-end</a>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
